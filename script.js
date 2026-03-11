@@ -359,6 +359,38 @@ function showItemDetail(itemId) {
 
     contactSection += `</div>`;
 
+    let actionButtons = `
+        <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+    `;
+
+    // Add "Mark as Found/Returned" button
+    if (item.status !== 'Returned') {
+        const buttonText = item.status === 'Lost' ? 'Mark as Found ✓' : 'Mark as Returned ✓';
+        const buttonColor = item.status === 'Lost' ? '#10b981' : '#06b6d4';
+        actionButtons += `
+            <button onclick="confirmItemAction(${item.id}, 'markFound')" 
+                    style="flex: 1; padding: 10px 15px; background: ${buttonColor}; color: white; border: none; 
+                            border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;"
+                    onmouseover="this.style.opacity='0.8'"
+                    onmouseout="this.style.opacity='1'">
+                ${buttonText}
+            </button>
+        `;
+    }
+
+    // Add Delete button
+    actionButtons += `
+        <button onclick="confirmItemAction(${item.id}, 'delete')" 
+                style="flex: 1; padding: 10px 15px; background: #ef4444; color: white; border: none; 
+                        border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;"
+                onmouseover="this.style.opacity='0.8'"
+                onmouseout="this.style.opacity='1'">
+            Delete ✕
+        </button>
+    `;
+
+    actionButtons += `</div>`;
+
     modalBody.innerHTML = `
         <img src="${item.image}" alt="${item.name}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 20px;">
         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
@@ -376,9 +408,46 @@ function showItemDetail(itemId) {
             <p style="color: var(--text-dark); line-height: 1.6; margin: 0;">${item.description}</p>
         </div>
         ${contactSection}
+        ${actionButtons}
     `;
 
     modal.style.display = 'block';
+}
+
+// Handle item actions (delete, mark found)
+function confirmItemAction(itemId, action) {
+    if (action === 'delete') {
+        if (confirm('Are you sure you want to delete this item? This cannot be undone.')) {
+            deleteItem(itemId);
+            document.getElementById('itemModal').style.display = 'none';
+        }
+    } else if (action === 'markFound') {
+        const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+        const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+        
+        let item = lostItems.find(i => i.id == itemId);
+        if (item) {
+            item.status = item.status === 'Lost' ? 'Found' : 'Returned';
+            localStorage.setItem('lostItems', JSON.stringify(lostItems));
+        }
+
+        item = foundItems.find(i => i.id == itemId);
+        if (item) {
+            item.status = 'Returned';
+            localStorage.setItem('foundItems', JSON.stringify(foundItems));
+        }
+
+        updateStats();
+        
+        // Refresh modal or close it
+        document.getElementById('itemModal').style.display = 'none';
+        if (document.getElementById('itemsGrid')) {
+            displayAllItems();
+        }
+        
+        // Show success message
+        alert('✅ Item status updated successfully!');
+    }
 }
 
 // Modal close functionality
