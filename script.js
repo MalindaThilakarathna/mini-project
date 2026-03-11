@@ -602,6 +602,23 @@ function showItemDetail(itemId) {
         contactSection += `<p><strong>Item Location:</strong> ${item.currentLocation}</p>`;
     }
 
+    // Add claim information if item is claimed
+    if (item.claimedBy && item.claimedBy !== '') {
+        const claimDate = new Date(item.claimedDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        contactSection += `
+            <p style="margin-top: 15px; padding: 10px; background: #ecfdf5; border-radius: 6px; border-left: 3px solid #10b981;">
+                <strong>✅ Claimed by:</strong> ${item.claimedBy}<br>
+                <small style="color: var(--text-light);">on ${claimDate}</small>
+            </p>
+        `;
+    }
+
     contactSection += `</div>`;
 
     let actionButtons = `
@@ -621,6 +638,35 @@ function showItemDetail(itemId) {
                 ${buttonText}
             </button>
         `;
+    }
+
+    // Add "Claim Item" button for found items
+    if (item.status !== 'Returned' && isLoggedIn()) {
+        const isClaimed = item.claimedBy && item.claimedBy !== '';
+        const currentUser = getCurrentUser();
+        const isOwnerClaim = item.claimedBy === currentUser?.email;
+        
+        if (isClaimed && !isOwnerClaim) {
+            actionButtons += `
+                <button disabled 
+                        style="flex: 1; padding: 10px 15px; background: #ccc; color: #666; border: none; 
+                                border-radius: 8px; cursor: not-allowed; font-weight: 600;">
+                    Already Claimed 🔒
+                </button>
+            `;
+        } else {
+            const claimButtonText = isOwnerClaim ? 'Unclaim Item ↩️' : 'Claim Item 🙋';
+            const claimButtonColor = isOwnerClaim ? '#06b6d4' : '#8b5cf6';
+            actionButtons += `
+                <button onclick="confirmItemAction(${item.id}, 'claim')" 
+                        style="flex: 1; padding: 10px 15px; background: ${claimButtonColor}; color: white; border: none; 
+                                border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;"
+                        onmouseover="this.style.opacity='0.8'"
+                        onmouseout="this.style.opacity='1'">
+                    ${claimButtonText}
+                </button>
+            `;
+        }
     }
 
     // Add Delete button
@@ -692,6 +738,51 @@ function confirmItemAction(itemId, action) {
         
         // Show success message
         alert('✅ Item status updated successfully!');
+    } else if (action === 'claim') {
+        const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+        const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+        const currentUser = getCurrentUser();
+
+        if (!currentUser) {
+            alert('❌ You must be logged in to claim an item.');
+            return;
+        }
+
+        let item = lostItems.find(i => i.id == itemId);
+        let isInLost = !!item;
+        if (!item) {
+            item = foundItems.find(i => i.id == itemId);
+        }
+
+        if (item) {
+            // Toggle claim - if already claimed by user, unclaim
+            if (item.claimedBy === currentUser.email) {
+                item.claimedBy = '';
+                item.claimedDate = '';
+                const message = `✅ You unclaimed "${item.name}"`;
+                alert(message);
+            } else {
+                item.claimedBy = currentUser.email;
+                item.claimedDate = new Date().toISOString();
+                const message = `🎉 You've successfully claimed "${item.name}"! Contact the item reporter to arrange a pickup.`;
+                alert(message);
+            }
+
+            // Save updated item
+            if (isInLost) {
+                localStorage.setItem('lostItems', JSON.stringify(lostItems));
+            } else {
+                localStorage.setItem('foundItems', JSON.stringify(foundItems));
+            }
+
+            // Refresh modal to show updated claim status
+            showItemDetail(itemId);
+            
+            // Log claim action if function exists
+            if (typeof logAdminAction === 'function') {
+                logAdminAction(`User ${currentUser.email} claimed item: ${item.name}`);
+            }
+        }
     }
 }
 

@@ -343,6 +343,10 @@
                 <div class="admin-stat-number" id="returnedItemsCount">0</div>
                 <div class="admin-stat-label">Returned Items</div>
             </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="claimedItemsCount">0</div>
+                <div class="admin-stat-label">Claimed Items</div>
+            </div>
         </div>
 
         <div class="admin-tabs">
@@ -383,6 +387,24 @@
                     </thead>
                     <tbody id="adminItemsBody">
                         <tr><td colspan="7" class="no-items-message">Loading items...</td></tr>
+                    </tbody>
+                </table>
+
+                <!-- Claimed Items Section -->
+                <h3 style="margin-top: 40px; margin-bottom: 20px; color: var(--text-dark);">🙋 Claimed Items Tracker</h3>
+                <table class="items-table" id="claimedItemsTable">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Status</th>
+                            <th>Claimed By</th>
+                            <th>Claimed Date</th>
+                            <th>Reporter Contact</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="claimedItemsBody">
+                        <tr><td colspan="6" class="no-items-message">No claimed items yet</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -462,6 +484,7 @@
 
             loadAdminStats();
             loadAdminItems();
+            loadClaimedItems();
             loadAdminUsers();
             loadAdminSettings();
         }
@@ -474,11 +497,13 @@
             const lostCount = lostItems.filter(i => i.status === 'Lost').length;
             const foundCount = foundItems.filter(i => i.status === 'Found').length;
             const returnedCount = allItems.filter(i => i.status === 'Returned').length;
+            const claimedCount = allItems.filter(i => i.claimedBy && i.claimedBy !== '').length;
 
             document.getElementById('totalItems').textContent = allItems.length;
             document.getElementById('lostItemsCount').textContent = lostCount;
             document.getElementById('foundItemsCount').textContent = foundCount;
             document.getElementById('returnedItemsCount').textContent = returnedCount;
+            document.getElementById('claimedItemsCount').textContent = claimedCount;
         }
 
         function loadAdminItems() {
@@ -510,6 +535,75 @@
                     </tr>
                 `;
             }).join('');
+        }
+
+        function loadClaimedItems() {
+            const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+            const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+            const allItems = [...lostItems, ...foundItems];
+
+            const claimedItems = allItems.filter(i => i.claimedBy && i.claimedBy !== '').sort((a, b) => 
+                new Date(b.claimedDate) - new Date(a.claimedDate)
+            );
+
+            if (claimedItems.length === 0) {
+                document.getElementById('claimedItemsBody').innerHTML = '<tr><td colspan="6" class="no-items-message">No claimed items yet</td></tr>';
+                return;
+            }
+
+            document.getElementById('claimedItemsBody').innerHTML = claimedItems.map(item => {
+                const statusClass = `status-${item.status.toLowerCase()}`;
+                const claimedDate = new Date(item.claimedDate).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                        <td>${item.claimedBy}</td>
+                        <td>${claimedDate}</td>
+                        <td>
+                            <small>
+                                <strong>${item.email}</strong><br>
+                                ${item.phone}
+                            </small>
+                        </td>
+                        <td>
+                            <button class="action-btn" onclick="adminUnclaimItem(${item.id})" style="background: #06b6d4; padding: 6px 12px; font-size: 12px;">Unclaim</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function adminUnclaimItem(itemId) {
+            if (confirm('Remove this claim from the item?')) {
+                const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+                const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+
+                let item = lostItems.find(i => i.id == itemId);
+                if (item) {
+                    item.claimedBy = '';
+                    item.claimedDate = '';
+                    localStorage.setItem('lostItems', JSON.stringify(lostItems));
+                } else {
+                    item = foundItems.find(i => i.id == itemId);
+                    if (item) {
+                        item.claimedBy = '';
+                        item.claimedDate = '';
+                        localStorage.setItem('foundItems', JSON.stringify(foundItems));
+                    }
+                }
+
+                loadAdminStats();
+                loadClaimedItems();
+                logAdminAction(`Admin removed claim from item: ${item?.name}`);
+            }
         }
 
         function loadAdminUsers() {
@@ -564,7 +658,10 @@
             event.target.classList.add('active');
 
             // Load content if needed
-            if (tabName === 'manage') loadAdminItems();
+            if (tabName === 'manage') {
+                loadAdminItems();
+                loadClaimedItems();
+            }
             if (tabName === 'users') loadAdminUsers();
         }
 
@@ -581,6 +678,7 @@
 
                 logAdminAction(`Deleted item (ID: ${itemId})`);
                 loadAdminItems();
+                loadClaimedItems();
                 loadAdminStats();
                 alert('✅ Item deleted successfully');
             }
@@ -604,6 +702,7 @@
 
             logAdminAction(`Marked item as returned (ID: ${itemId})`);
             loadAdminItems();
+            loadClaimedItems();
             loadAdminStats();
             alert('✅ Item marked as returned');
         }
@@ -676,6 +775,7 @@
             document.getElementById('adminSearch').value = '';
             document.getElementById('adminStatusFilter').value = '';
             loadAdminItems();
+            loadClaimedItems();
         }
 
         function logAdminAction(action) {
