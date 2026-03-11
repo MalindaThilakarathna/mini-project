@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Lost & Found System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>🏫 Campus Lost & Found</h1>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link active">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="report-lost.html" class="nav-link">Report Lost Item</a>
+                </li>
+                <li class="nav-item">
+                    <a href="report-found.html" class="nav-link">Report Found Item</a>
+                </li>
+                <li class="nav-item">
+                    <a href="search.html" class="nav-link">Search Items</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Campus Lost & Found System</h1>
+            <p class="hero-subtitle">Help your campus community find lost items and reunite belongings with their owners</p>
+            <div class="hero-buttons">
+                <a href="report-lost.html" class="btn btn-primary">Report Lost Item</a>
+                <a href="report-found.html" class="btn btn-secondary">Report Found Item</a>
+            </div>
+        </div>
+        <div class="hero-background"></div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-card glass-effect">
+                <div class="stat-number" id="lostCount">0</div>
+                <div class="stat-label">Lost Items</div>
+            </div>
+            <div class="stat-card glass-effect">
+                <div class="stat-number" id="foundCount">0</div>
+                <div class="stat-label">Found Items</div>
+            </div>
+            <div class="stat-card glass-effect">
+                <div class="stat-number" id="returnedCount">0</div>
+                <div class="stat-label">Returned Items</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-container">
+            <h2>How It Works</h2>
+            <div class="features-grid">
+                <div class="feature-card glass-effect">
+                    <div class="feature-icon">📋</div>
+                    <h3>Report Lost Item</h3>
+                    <p>Post details about your lost item including description, location, and date</p>
+                </div>
+                <div class="feature-card glass-effect">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Search Database</h3>
+                    <p>Browse through all lost and found items in our campus database</p>
+                </div>
+                <div class="feature-card glass-effect">
+                    <div class="feature-icon">📸</div>
+                    <h3>Add Images</h3>
+                    <p>Upload clear images of items to help with identification</p>
+                </div>
+                <div class="feature-card glass-effect">
+                    <div class="feature-icon">📞</div>
+                    <h3>Direct Contact</h3>
+                    <p>Contact item finders/reporters through provided phone and email</p>
+                </div>
+                <div class="feature-card glass-effect">
+                    <div class="feature-icon">✅</div>
+                    <h3>Mark as Returned</h3>
+                    <p>Update status when items are successfully returned to owners</p>
+                </div>
+                <div class="feature-card glass-effect">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Campus Wide</h3>
+                    <p>Access to all lost and found items reported across campus</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Items Section -->
+    <section class="recent-items">
+        <div class="container">
+            <h2>Recently Reported Items</h2>
+            <div class="items-grid" id="recentItemsGrid">
+                <!-- Items will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Campus Lost & Found System</h4>
+                <p>A platform for university students in Colombo to report and find lost items</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="search.html">Search Items</a></li>
+                    <li><a href="report-lost.html">Report Lost</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: <strong>support@campuslostfound.lk</strong></p>
+                <p>Phone: <strong>+94-11-XXXX-XXXX</strong></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Campus Lost & Found System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Display recent items on homepage
+        document.addEventListener('DOMContentLoaded', function() {
+            displayRecentItems();
+            updateStats();
+        });
+    </script>
+</body>
+</html>
