@@ -100,12 +100,177 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /* ========================
+   AUTHENTICATION FUNCTIONS
+   ======================== */
+
+function getCurrentUser() {
+    const currentUser = localStorage.getItem('currentUser');
+    return currentUser ? JSON.parse(currentUser) : null;
+}
+
+function isLoggedIn() {
+    return localStorage.getItem('currentUser') !== null;
+}
+
+function isGuest() {
+    const user = getCurrentUser();
+    return user && user.type === 'Guest';
+}
+
+function isAdmin() {
+    const user = getCurrentUser();
+    return user && user.isAdmin;
+}
+
+function redirectToLogin(message = '') {
+    localStorage.setItem('redirectMessage', message || 'Please log in to access this page.');
+    window.location.href = 'login.html';
+}
+
+function logout() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('isLoggedIn');
+    window.location.href = 'login.html';
+}
+
+function checkAuthenticationStatus() {
+    const user = getCurrentUser();
+    const navbar = document.querySelector('.navbar-buttons');
+    
+    if (!navbar) return; // Skip if navbar doesn't exist
+    
+    // Clear existing buttons
+    const existingButtons = navbar.querySelectorAll('.auth-button');
+    existingButtons.forEach(btn => btn.remove());
+    
+    if (user) {
+        // User is logged in - show user info and logout button
+        const userName = user.name || user.email.split('@')[0];
+        const userBadge = document.createElement('span');
+        userBadge.className = 'auth-button user-badge';
+        userBadge.style.cssText = `
+            padding: 8px 15px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: default;
+            text-transform: capitalize;
+        `;
+        const roleText = user.type === 'Guest' ? '👤 Guest' : user.isAdmin ? '👨‍💼 Admin' : '👨‍🎓 Student';
+        userBadge.innerHTML = `${roleText} • ${userName.substring(0, 20)}`;
+        navbar.appendChild(userBadge);
+        
+        // Add logout button
+        const logoutBtn = document.createElement('button');
+        logoutBtn.className = 'auth-button logout-btn';
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.style.cssText = `
+            padding: 8px 18px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        `;
+        logoutBtn.addEventListener('mouseover', function() {
+            this.style.background = 'rgb(239, 68, 68)';
+            this.style.transform = 'translateY(-2px)';
+        });
+        logoutBtn.addEventListener('mouseout', function() {
+            this.style.background = 'rgba(239, 68, 68, 0.9)';
+            this.style.transform = 'translateY(0)';
+        });
+        logoutBtn.addEventListener('click', logout);
+        navbar.appendChild(logoutBtn);
+        
+        // Add Admin dashboard link if user is admin
+        if (user.isAdmin) {
+            const adminLink = document.createElement('a');
+            adminLink.href = 'admin.html';
+            adminLink.className = 'auth-button admin-link';
+            adminLink.textContent = '⚙️ Admin Panel';
+            adminLink.style.cssText = `
+                padding: 8px 18px;
+                background: rgba(147, 51, 234, 0.9);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                text-decoration: none;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                display: inline-block;
+            `;
+            adminLink.addEventListener('mouseover', function() {
+                this.style.background = 'rgb(147, 51, 234)';
+                this.style.transform = 'translateY(-2px)';
+            });
+            adminLink.addEventListener('mouseout', function() {
+                this.style.background = 'rgba(147, 51, 234, 0.9)';
+                this.style.transform = 'translateY(0)';
+            });
+            navbar.appendChild(adminLink);
+        }
+    } else {
+        // User is not logged in - show login button
+        const loginBtn = document.createElement('a');
+        loginBtn.href = 'login.html';
+        loginBtn.className = 'auth-button';
+        loginBtn.textContent = '🔐 Login';
+        loginBtn.style.cssText = `
+            padding: 8px 18px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        `;
+        loginBtn.addEventListener('mouseover', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 10px 20px rgba(102, 126, 234, 0.4)';
+        });
+        loginBtn.addEventListener('mouseout', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+        navbar.appendChild(loginBtn);
+    }
+}
+
+// Check authentication on every page load
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuthenticationStatus();
+});
+
+/* ========================
    FORM HANDLING
    ======================== */
 
 // Handle Lost Item Form Submission
 function handleLostItemSubmit(e) {
     e.preventDefault();
+
+    // Check if user is authenticated and not a guest
+    if (!isLoggedIn()) {
+        redirectToLogin('You must log in to report a lost item.');
+        return;
+    }
+
+    if (isGuest()) {
+        alert('❌ Guest users cannot report items. Please login with your university account to report lost items.');
+        return;
+    }
 
     const formData = {
         id: Date.now(),
@@ -117,7 +282,8 @@ function handleLostItemSubmit(e) {
         email: document.getElementById('contactEmail').value,
         phone: document.getElementById('contactPhone').value,
         status: 'Lost',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        reportedBy: getCurrentUser().email
     };
 
     // Get existing lost items
@@ -146,6 +312,17 @@ function handleLostItemSubmit(e) {
 function handleFoundItemSubmit(e) {
     e.preventDefault();
 
+    // Check if user is authenticated and not a guest
+    if (!isLoggedIn()) {
+        redirectToLogin('You must log in to report a found item.');
+        return;
+    }
+
+    if (isGuest()) {
+        alert('❌ Guest users cannot report items. Please login with your university account to report found items.');
+        return;
+    }
+
     const formData = {
         id: Date.now(),
         name: document.getElementById('itemName').value,
@@ -157,7 +334,8 @@ function handleFoundItemSubmit(e) {
         phone: document.getElementById('contactPhone').value,
         currentLocation: document.getElementById('currentLocation').value || 'Campus Security Office',
         status: 'Found',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        reportedBy: getCurrentUser().email
     };
 
     // Get existing found items
@@ -185,15 +363,82 @@ function handleFoundItemSubmit(e) {
 // Handle Image Preview
 function previewImage(e) {
     const file = e.target.files[0];
-    const preview = e.target.nextElementSibling.nextElementSibling;
+    const fileUploadContainer = e.target.closest('.file-upload');
+    const preview = fileUploadContainer.querySelector('.image-preview');
+    const qualityDiv = fileUploadContainer.querySelector('.image-quality');
 
     if (file) {
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            qualityDiv.innerHTML = '⚠️ <strong>File too large!</strong> Maximum size is 5MB. Please compress your image.';
+            qualityDiv.style.background = '#fef3c7';
+            qualityDiv.style.borderLeftColor = '#f59e0b';
+            qualityDiv.style.display = 'block';
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = function(event) {
-            preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+            const img = new Image();
+            img.onload = function() {
+                // Display preview
+                preview.innerHTML = `<img src="${event.target.result}" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px;">`;
+                
+                // Analyze image quality
+                analyzeImageQuality(img, file, qualityDiv);
+            };
+            img.src = event.target.result;
         };
         reader.readAsDataURL(file);
     }
+}
+
+// Analyze image quality and provide feedback
+function analyzeImageQuality(img, file, qualityDiv) {
+    let quality = 'good';
+    let feedback = '✅ <strong>Image Quality:</strong> ';
+    let tips = [];
+
+    // Check resolution (at least 400x300 recommended)
+    const minWidth = 400;
+    const minHeight = 300;
+    
+    if (img.width < minWidth || img.height < minHeight) {
+        quality = 'low';
+        feedback += `Image is ${img.width}x${img.height}px. `;
+        tips.push('Tip: Use a higher resolution image for better identification');
+    } else {
+        feedback += `${img.width}x${img.height}px. `;
+    }
+
+    // Check file type and compression
+    const isJPEG = file.type === 'image/jpeg';
+    const isPNG = file.type === 'image/png';
+    const fileSizeKB = (file.size / 1024).toFixed(2);
+
+    if (isJPEG) {
+        feedback += `JPEG (${fileSizeKB}KB). `;
+        if (file.size > 2 * 1024 * 1024) {
+            tips.push('Tip: Your JPEG is large. Consider compressing it');
+        }
+    } else if (isPNG) {
+        feedback += `PNG (${fileSizeKB}KB). `;
+        if (file.size > 3 * 1024 * 1024) {
+            tips.push('Tip: Your PNG is large. Consider using JPEG instead');
+        }
+    }
+
+    // Additional tips
+    if (tips.length === 0) {
+        feedback += 'Ready to upload!';
+    }
+
+    // Display feedback
+    qualityDiv.innerHTML = feedback + (tips.length > 0 ? `<br>${tips.join('<br>')}` : '');
+    qualityDiv.style.background = quality === 'good' ? '#d1fae5' : '#fef3c7';
+    qualityDiv.style.borderLeftColor = quality === 'good' ? '#10b981' : '#f59e0b';
+    qualityDiv.style.display = 'block';
 }
 
 /* ========================

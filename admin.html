@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Campus Lost & Found</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .admin-header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .admin-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab-btn {
+            padding: 12px 20px;
+            background: white;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #6b7280;
+            border: 2px solid transparent;
+        }
+
+        .admin-tab-btn.active {
+            color: #2563eb;
+            border-bottom: 3px solid #2563eb;
+            background: #f3f4f6;
+        }
+
+        .admin-tab-btn:hover:not(.active) {
+            background: #f9fafb;
+            color: #1f2937;
+        }
+
+        .admin-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-stat-card {
+            background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .admin-stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .admin-stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .items-table thead {
+            background: #f3f4f6;
+        }
+
+        .items-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .items-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .items-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .item-image-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-lost {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status-found {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-returned {
+            background: #cffafe;
+            color: #0369a1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .btn-approve:hover {
+            background: #bbf7d0;
+        }
+
+        .btn-delete {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-delete:hover {
+            background: #fecaca;
+        }
+
+        .btn-status {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .btn-status:hover {
+            background: #bfdbfe;
+        }
+
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+        }
+
+        .settings-form label {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .settings-form input,
+        .settings-form textarea {
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .settings-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .settings-save-btn {
+            padding: 12px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-save-btn:hover {
+            background: #059669;
+        }
+
+        .no-items-message {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .search-filter {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-filter input,
+        .search-filter select {
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-family: inherit;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .admin-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .admin-tabs {
+                flex-direction: column;
+            }
+
+            .items-table {
+                font-size: 0.9rem;
+            }
+
+            .items-table th,
+            .items-table td {
+                padding: 8px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="padding-top: 30px;">
+        <div class="admin-header">
+            <h1>⚙️ Admin Dashboard</h1>
+            <div class="admin-user-info">
+                <div>
+                    <div style="font-size: 0.9rem; opacity: 0.8;">Logged in as:</div>
+                    <div id="adminName" style="font-weight: 600;"></div>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="admin-stats" id="adminStats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="totalItems">0</div>
+                <div class="admin-stat-label">Total Items</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="lostItemsCount">0</div>
+                <div class="admin-stat-label">Lost Items</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="foundItemsCount">0</div>
+                <div class="admin-stat-label">Found Items</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-number" id="returnedItemsCount">0</div>
+                <div class="admin-stat-label">Returned Items</div>
+            </div>
+        </div>
+
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" onclick="switchTab('manage')">📋 Manage Items</button>
+            <button class="admin-tab-btn" onclick="switchTab('users')">👥 Users</button>
+            <button class="admin-tab-btn" onclick="switchTab('settings')">⚙️ Settings</button>
+            <button class="admin-tab-btn" onclick="switchTab('logs')">📊 System Logs</button>
+        </div>
+
+        <div class="admin-content">
+            <!-- Manage Items Tab -->
+            <div id="manage" class="tab-pane active">
+                <h2>Manage Reported Items</h2>
+                
+                <div class="search-filter">
+                    <input type="text" id="adminSearch" placeholder="Search items..." onkeyup="filterAdminItems()">
+                    <select id="adminStatusFilter" onchange="filterAdminItems()">
+                        <option value="">All Items</option>
+                        <option value="Lost">Lost Items</option>
+                        <option value="Found">Found Items</option>
+                        <option value="Returned">Returned Items</option>
+                    </select>
+                    <button style="padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="filterAdminItems()">Filter</button>
+                    <button style="padding: 10px 20px; background: #6b7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="resetAdminFilters()">Reset</button>
+                </div>
+
+                <table class="items-table" id="itemsTableBody">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Item Name</th>
+                            <th>Type</th>
+                            <th>Location</th>
+                            <th>Reporter</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminItemsBody">
+                        <tr><td colspan="7" class="no-items-message">Loading items...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users" class="tab-pane">
+                <h2>Registered Users</h2>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>User Type</th>
+                            <th>Items Reported</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr><td colspan="5" class="no-items-message">Loading users...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-pane">
+                <h2>System Settings</h2>
+                <div class="settings-form">
+                    <div>
+                        <label>Campus Name:</label>
+                        <input type="text" id="campusName" value="University Campus Colombo">
+                    </div>
+                    <div>
+                        <label>Support Email:</label>
+                        <input type="email" id="supportEmail" value="support@campuslostfound.lk">
+                    </div>
+                    <div>
+                        <label>Support Phone:</label>
+                        <input type="tel" id="supportPhone" value="+94-11-XXXX-XXXX">
+                    </div>
+                    <div>
+                        <label>System Message (displayed on homepage):</label>
+                        <textarea id="systemMessage" placeholder="Enter system message..."></textarea>
+                    </div>
+                    <button class="settings-save-btn" onclick="saveAdminSettings()">Save Settings</button>
+                </div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div id="logs" class="tab-pane">
+                <h2>System Activity Logs</h2>
+                <div id="logsContainer" style="max-height: 500px; overflow-y: auto; background: #f9fafb; padding: 20px; border-radius: 8px;">
+                    <p style="color: #6b7280;">Activity logs will appear here...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Admin Dashboard Functions
+        function checkAdminAccess() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            if (!currentUser || !currentUser.isAdmin) {
+                alert('⛔ Access Denied: Admin privileges required');
+                window.location.href = 'index.html';
+                return false;
+            }
+            return true;
+        }
+
+        function initializeAdminDashboard() {
+            if (!checkAdminAccess()) return;
+
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            document.getElementById('adminName').textContent = currentUser.name;
+
+            loadAdminStats();
+            loadAdminItems();
+            loadAdminUsers();
+            loadAdminSettings();
+        }
+
+        function loadAdminStats() {
+            const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+            const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+            const allItems = [...lostItems, ...foundItems];
+
+            const lostCount = lostItems.filter(i => i.status === 'Lost').length;
+            const foundCount = foundItems.filter(i => i.status === 'Found').length;
+            const returnedCount = allItems.filter(i => i.status === 'Returned').length;
+
+            document.getElementById('totalItems').textContent = allItems.length;
+            document.getElementById('lostItemsCount').textContent = lostCount;
+            document.getElementById('foundItemsCount').textContent = foundCount;
+            document.getElementById('returnedItemsCount').textContent = returnedCount;
+        }
+
+        function loadAdminItems() {
+            const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+            const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+            const allItems = [...lostItems, ...foundItems].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (allItems.length === 0) {
+                document.getElementById('adminItemsBody').innerHTML = '<tr><td colspan="7" class="no-items-message">No items reported yet</td></tr>';
+                return;
+            }
+
+            document.getElementById('adminItemsBody').innerHTML = allItems.map(item => {
+                const statusClass = `status-${item.status.toLowerCase()}`;
+                return `
+                    <tr>
+                        <td><img src="${item.image}" alt="${item.name}" class="item-image-thumb"></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.status}</td>
+                        <td>${item.location}</td>
+                        <td>${item.email}</td>
+                        <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                ${item.status !== 'Returned' ? `<button class="action-btn btn-status" onclick="adminMarkAsReturned(${item.id})">Mark Returned</button>` : ''}
+                                <button class="action-btn btn-delete" onclick="adminDeleteItem(${item.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function loadAdminUsers() {
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || {};
+            const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+            const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+
+            const usersArray = Object.entries(registeredUsers).map(([email, user]) => {
+                const itemsReported = [...lostItems, ...foundItems].filter(i => i.email === email).length;
+                return { email, ...user, itemsReported };
+            });
+
+            if (usersArray.length === 0) {
+                document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="5" class="no-items-message">No users registered</td></tr>';
+                return;
+            }
+
+            document.getElementById('usersTableBody').innerHTML = usersArray.map(user => `
+                <tr>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td><span class="status-badge">${user.type}</span></td>
+                    <td>${user.itemsReported}</td>
+                    <td>
+                        <button class="action-btn btn-delete" onclick="adminRemoveUser('${user.email}')">Remove User</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadAdminSettings() {
+            const settings = JSON.parse(localStorage.getItem('adminSettings')) || {
+                campusName: 'University Campus Colombo',
+                supportEmail: 'support@campuslostfound.lk',
+                supportPhone: '+94-11-XXXX-XXXX',
+                systemMessage: ''
+            };
+
+            document.getElementById('campusName').value = settings.campusName;
+            document.getElementById('supportEmail').value = settings.supportEmail;
+            document.getElementById('supportPhone').value = settings.supportPhone;
+            document.getElementById('systemMessage').value = settings.systemMessage;
+        }
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Load content if needed
+            if (tabName === 'manage') loadAdminItems();
+            if (tabName === 'users') loadAdminUsers();
+        }
+
+        function adminDeleteItem(itemId) {
+            if (confirm('⚠️ Are you sure you want to permanently delete this item?')) {
+                let lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+                let foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+
+                lostItems = lostItems.filter(i => i.id != itemId);
+                foundItems = foundItems.filter(i => i.id != itemId);
+
+                localStorage.setItem('lostItems', JSON.stringify(lostItems));
+                localStorage.setItem('foundItems', JSON.stringify(foundItems));
+
+                logAdminAction(`Deleted item (ID: ${itemId})`);
+                loadAdminItems();
+                loadAdminStats();
+                alert('✅ Item deleted successfully');
+            }
+        }
+
+        function adminMarkAsReturned(itemId) {
+            let lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+            let foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+
+            let item = lostItems.find(i => i.id == itemId);
+            if (item) {
+                item.status = 'Returned';
+                localStorage.setItem('lostItems', JSON.stringify(lostItems));
+            }
+
+            item = foundItems.find(i => i.id == itemId);
+            if (item) {
+                item.status = 'Returned';
+                localStorage.setItem('foundItems', JSON.stringify(foundItems));
+            }
+
+            logAdminAction(`Marked item as returned (ID: ${itemId})`);
+            loadAdminItems();
+            loadAdminStats();
+            alert('✅ Item marked as returned');
+        }
+
+        function adminRemoveUser(email) {
+            if (confirm(`⚠️ Remove user ${email}? This action cannot be undone.`)) {
+                let registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || {};
+                delete registeredUsers[email];
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+
+                logAdminAction(`Removed user: ${email}`);
+                loadAdminUsers();
+                alert('✅ User removed successfully');
+            }
+        }
+
+        function saveAdminSettings() {
+            const settings = {
+                campusName: document.getElementById('campusName').value,
+                supportEmail: document.getElementById('supportEmail').value,
+                supportPhone: document.getElementById('supportPhone').value,
+                systemMessage: document.getElementById('systemMessage').value
+            };
+
+            localStorage.setItem('adminSettings', JSON.stringify(settings));
+            logAdminAction('Updated system settings');
+            alert('✅ Settings saved successfully');
+        }
+
+        function filterAdminItems() {
+            const search = document.getElementById('adminSearch').value.toLowerCase();
+            const statusFilter = document.getElementById('adminStatusFilter').value;
+            const lostItems = JSON.parse(localStorage.getItem('lostItems')) || [];
+            const foundItems = JSON.parse(localStorage.getItem('foundItems')) || [];
+            let allItems = [...lostItems, ...foundItems];
+
+            allItems = allItems.filter(item => {
+                const matchSearch = item.name.toLowerCase().includes(search) || item.email.includes(search);
+                const matchStatus = statusFilter === '' || item.status === statusFilter;
+                return matchSearch && matchStatus;
+            });
+
+            if (allItems.length === 0) {
+                document.getElementById('adminItemsBody').innerHTML = '<tr><td colspan="7" class="no-items-message">No items match your filter</td></tr>';
+                return;
+            }
+
+            document.getElementById('adminItemsBody').innerHTML = allItems.map(item => {
+                const statusClass = `status-${item.status.toLowerCase()}`;
+                return `
+                    <tr>
+                        <td><img src="${item.image}" alt="${item.name}" class="item-image-thumb"></td>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.status}</td>
+                        <td>${item.location}</td>
+                        <td>${item.email}</td>
+                        <td><span class="status-badge ${statusClass}">${item.status}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                ${item.status !== 'Returned' ? `<button class="action-btn btn-status" onclick="adminMarkAsReturned(${item.id})">Mark Returned</button>` : ''}
+                                <button class="action-btn btn-delete" onclick="adminDeleteItem(${item.id})">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function resetAdminFilters() {
+            document.getElementById('adminSearch').value = '';
+            document.getElementById('adminStatusFilter').value = '';
+            loadAdminItems();
+        }
+
+        function logAdminAction(action) {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const timestamp = new Date().toLocaleString();
+            const log = `[${timestamp}] ${currentUser.name}: ${action}`;
+
+            let logs = JSON.parse(localStorage.getItem('adminLogs')) || [];
+            logs.unshift(log);
+            if (logs.length > 100) logs = logs.slice(0, 100); // Keep last 100 logs
+            localStorage.setItem('adminLogs', JSON.stringify(logs));
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdminDashboard();
+        });
+    </script>
+</body>
+</html>

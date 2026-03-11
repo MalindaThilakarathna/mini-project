@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Campus Lost & Found</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+            animation: slideUp 0.6s ease;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: white;
+        }
+
+        .email-domain-hint {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: -15px;
+        }
+
+        .login-button {
+            padding: 14px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            color: #d1d5db;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background: #d1d5db;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .guest-login {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        .guest-btn {
+            background: white;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .guest-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .guest-text {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            padding: 12px;
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 8px;
+            border-left: 4px solid #dc2626;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .success-message {
+            padding: 12px;
+            background: #dcfce7;
+            color: #15803d;
+            border-radius: 8px;
+            border-left: 4px solid #15803d;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .user-type-badge {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>🏫 Campus Lost & Found</h1>
+                <p>Secure Student Portal</p>
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="userType">User Type *</label>
+                    <select id="userType" required onchange="updateEmailHint()">
+                        <option value="">Select your role...</option>
+                        <option value="student">🎓 Student</option>
+                        <option value="staff">👨‍💼 Campus Staff</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" placeholder="your.name@university.edu" required>
+                    <div class="email-domain-hint" id="emailHint">Use your university email address</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="login-button">Login to Portal</button>
+            </form>
+
+            <div class="divider">or</div>
+
+            <div class="guest-login">
+                <p class="guest-text">Continue as Guest (Limited Access)</p>
+                <button type="button" class="guest-btn" onclick="loginAsGuest()">Browse as Guest</button>
+                <p style="font-size: 0.85rem; color: #6b7280; margin-top: 10px;">
+                    ⚠️ Guest users cannot report items
+                </p>
+            </div>
+
+            <div class="user-type-badge" id="userTypeBadge" style="display: none;">
+                You will be logged in as: <strong id="userTypeDisplay"></strong>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize authentication system
+        function initAuthSystem() {
+            if (!localStorage.getItem('registeredUsers')) {
+                // Pre-register some test users
+                const testUsers = {
+                    'test@university.edu': { password: 'test123', type: 'student', name: 'Test Student' },
+                    'admin@university.edu': { password: 'admin123', type: 'staff', name: 'Admin Staff', isAdmin: true }
+                };
+                localStorage.setItem('registeredUsers', JSON.stringify(testUsers));
+            }
+        }
+
+        function updateEmailHint() {
+            const userType = document.getElementById('userType').value;
+            const emailHint = document.getElementById('emailHint');
+            
+            if (userType === 'student') {
+                emailHint.textContent = 'Use your student email (@university.edu)';
+            } else if (userType === 'staff') {
+                emailHint.textContent = 'Use your staff email (@university.edu)';
+            } else {
+                emailHint.textContent = 'Use your university email address';
+            }
+        }
+
+        function validateUniversityEmail(email) {
+            const universityDomains = ['university.edu', 'uni.edu', 'college.edu', 'student.edu'];
+            const domain = email.split('@')[1];
+            return universityDomains.some(d => domain === d);
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const userType = document.getElementById('userType').value;
+            const errorMsg = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('successMessage');
+
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'none';
+
+            // Validate university email
+            if (!validateUniversityEmail(email)) {
+                errorMsg.textContent = '❌ Please use your university email address';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Check credentials
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers'));
+            const user = registeredUsers[email];
+
+            if (!user) {
+                errorMsg.textContent = '❌ Email not found. Please register first or contact your administrator.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (user.password !== password) {
+                errorMsg.textContent = '❌ Incorrect password. Please try again.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            if (user.type !== userType) {
+                errorMsg.textContent = `❌ This account is registered as a ${user.type}. Please select the correct user type.`;
+                errorMsg.style.display = 'block';
+                return;
+            }
+
+            // Successful login
+            const sessionData = {
+                email: email,
+                name: user.name,
+                type: userType,
+                isAdmin: user.isAdmin || false,
+                loginTime: new Date().toISOString()
+            };
+
+            localStorage.setItem('currentUser', JSON.stringify(sessionData));
+            localStorage.setItem('isLoggedIn', 'true');
+
+            successMsg.textContent = `✅ Welcome ${user.name}! Redirecting...`;
+            successMsg.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        });
+
+        function loginAsGuest() {
+            const sessionData = {
+                email: 'guest@university.edu',
+                name: 'Guest User',
+                type: 'guest',
+                isAdmin: false,
+                loginTime: new Date().toISOString()
+            };
+
+            localStorage.setItem('currentUser', JSON.stringify(sessionData));
+            localStorage.setItem('isLoggedIn', 'true');
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 500);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initAuthSystem();
+            
+            // Check if already logged in
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
