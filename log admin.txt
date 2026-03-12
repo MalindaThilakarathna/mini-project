@@ -1,0 +1,5 @@
+Use admin credentials:
+
+Email: admin@university.edu
+Password: admin123
+User Type: 👨‍💼 Campus Staff

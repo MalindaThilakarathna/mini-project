@@ -101,6 +101,7 @@ body.dark-mode {
     justify-content: space-between;
     align-items: center;
     height: 70px;
+    flex-wrap: nowrap;
 }
 
 .nav-logo h1 {
@@ -111,12 +112,15 @@ body.dark-mode {
     background-clip: text;
     font-weight: 700;
     letter-spacing: -0.5px;
+    white-space: nowrap;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
     gap: 30px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
 }
 
 .nav-item {
@@ -174,6 +178,7 @@ body.dark-mode {
     transition: all 0.3s ease;
     font-size: 1.5rem;
     position: relative;
+    margin-left: auto;
 }
 
 .dark-mode-toggle:hover {
@@ -1321,6 +1326,7 @@ body.dark-mode .dark-mode-toggle {
 @media (max-width: 768px) {
     .nav-menu {
         gap: 15px;
+        flex-wrap: nowrap;
     }
 
     .nav-link {
@@ -1388,11 +1394,13 @@ body.dark-mode .dark-mode-toggle {
 
     .nav-logo h1 {
         font-size: 1.3rem;
+        white-space: nowrap;
     }
 
     .nav-menu {
         gap: 10px;
         font-size: 0.85rem;
+        flex-wrap: nowrap;
     }
 
     .form-buttons {
