@@ -124,12 +124,51 @@ body.dark-mode {
 .nav-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    /* remove side padding so items can hit edges */
+    padding: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 70px;
     flex-wrap: nowrap;
+    position: relative;
+}
+
+/* prevent inner elements inheriting any extra spacing */
+.nav-container > * {
+    padding: 0 20px;
+}
+
+/* push logo to extreme left */
+.nav-logo {
+    order: 1;
+    margin-left: 0;
+}
+
+/* ensure dark toggle flush right */
+.dark-mode-toggle {
+    order: 4;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+/* ensure logo stays left and toggle pushes to right */
+.nav-logo {
+    order: 1;
+}
+
+.nav-menu {
+    order: 2;
+    margin-left: 20px;
+}
+
+.navbar-buttons {
+    order: 3;
+}
+
+.dark-mode-toggle {
+    order: 4;
+    margin-left: auto;
 }
 
 .nav-logo h1 {
