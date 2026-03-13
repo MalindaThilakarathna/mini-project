@@ -1664,11 +1664,11 @@ body.dark-mode .dark-mode-toggle {
 .search-tips {
     margin-top: 15px;
     padding: 12px;
-    background: rgba(37, 99, 235, 0.1);
+    background: #5B7EDB;
     border-radius: 8px;
     border-left: 4px solid #2563eb;
     font-size: 13px;
-    color: var(--text-dark);
+    color: white;
 }
 
 #toggleMapView {
