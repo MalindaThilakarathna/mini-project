@@ -16,7 +16,12 @@
             justify-content: space-between;
             align-items: center;
             gap: 20px;
+<<<<<<< HEAD
             min-height: 80px;
+=======
+            position: relative;
+            z-index: 9;
+>>>>>>> 1a96cd28515e903954f14cbe5e88fe2893bb8813
         }
 
         .admin-header h1 {
@@ -60,6 +65,8 @@
             margin-bottom: 30px;
             border-bottom: 2px solid #e5e7eb;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 9;
         }
 
         .admin-tab-btn {
@@ -90,6 +97,8 @@
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 9;
         }
 
         .tab-pane {
@@ -105,6 +114,8 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
+            position: relative;
+            z-index: 9;
         }
 
         .admin-stat-card {
@@ -417,7 +428,29 @@
     </style>
 </head>
 <body>
-    <div class="container" style="padding-top: 30px;">
+    <!-- Full Page Floating Background -->
+    <div class="page-floating-background">
+        <div class="floating-item item-1">📱</div>
+        <div class="floating-item item-2">⌚</div>
+        <div class="floating-item item-3">👜</div>
+        <div class="floating-item item-4">💼</div>
+        <div class="floating-item item-5">🎧</div>
+        <div class="floating-item item-6">🔑</div>
+        <div class="floating-item item-7">🎓</div>
+        <div class="floating-item item-8">👓</div>
+    </div>
+
+    <div class="container" style="padding-top: 30px; position: relative;">
+        <div class="hero-background">
+            <div class="floating-item item-1">📱</div>
+            <div class="floating-item item-2">⌚</div>
+            <div class="floating-item item-3">👜</div>
+            <div class="floating-item item-4">💼</div>
+            <div class="floating-item item-5">🎧</div>
+            <div class="floating-item item-6">🔑</div>
+            <div class="floating-item item-7">🎓</div>
+            <div class="floating-item item-8">👓</div>
+        </div>
         <div class="admin-header">
             <h1>⚙️ Admin Dashboard</h1>
             <div class="admin-user-info">
