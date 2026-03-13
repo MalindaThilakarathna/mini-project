@@ -959,3 +959,40 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+/* ========================
+   DARK MODE FUNCTIONALITY
+   ======================== */
+
+// Initialize dark mode on page load
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDarkMode();
+});
+
+function initializeDarkMode() {
+    // Check if user has saved dark mode preference
+    const isDarkMode = localStorage.getItem('darkMode') === 'enabled';
+    
+    // Apply saved preference
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+    }
+    
+    // Add event listener to dark mode toggle button
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', toggleDarkMode);
+    }
+}
+
+function toggleDarkMode() {
+    const body = document.body;
+    
+    // Toggle dark mode class
+    body.classList.toggle('dark-mode');
+    
+    // Save preference to localStorage
+    const isDarkMode = body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+}
+
