@@ -184,6 +184,19 @@ body.dark-mode {
     z-index: 1;
 }
 
+/* Responsive container padding */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 10px;
+    }
+}
+
 /* ========================
    NAVIGATION BAR
    ======================== */
@@ -228,17 +241,17 @@ body.dark-mode {
     padding: 0 20px;
 }
 
-/* push logo to extreme left */
+/* push logo to extreme right */
 .nav-logo {
-    order: 1;
-    margin-left: 0;
-}
-
-/* ensure dark toggle flush right */
-.dark-mode-toggle {
     order: 4;
     margin-left: auto;
     margin-right: 0;
+}
+
+/* ensure dark toggle stays right but after logo */
+.dark-mode-toggle {
+    order: 5;
+    margin-left: 0;
 }
 
 /* ensure logo stays left and toggle pushes to right */
@@ -261,8 +274,8 @@ body.dark-mode {
 }
 
 .nav-logo h1 {
-    font-size: 1.8rem;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -926,7 +939,7 @@ body.dark-mode .dark-mode-toggle {
 }
 
 .page-header h1 {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
     color: var(--bg-white);
     margin-bottom: 10px;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -952,7 +965,7 @@ body.dark-mode .dark-mode-toggle {
 }
 
 .form-container {
-    max-width: 600px;
+    max-width: min(600px, 90vw);
     margin: 0 auto;
     padding: 50px;
     border-radius: 20px;
@@ -1176,7 +1189,7 @@ body.dark-mode .dark-mode-toggle {
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 30px;
     padding: 0 20px;
 }
@@ -1348,7 +1361,7 @@ body.dark-mode .dark-mode-toggle {
 
 .modal-content {
     position: relative;
-    max-width: 600px;
+    max-width: min(600px, 90vw);
     margin: 50px auto;
     max-height: 80vh;
     overflow-y: auto;
@@ -1498,6 +1511,48 @@ body.dark-mode .dark-mode-toggle {
    RESPONSIVE DESIGN
    ======================== */
 
+/* Large screens (desktops > 1200px) */
+@media (min-width: 1201px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Medium screens (tablets 769px - 900px) */
+@media (min-width: 769px) and (max-width: 900px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .nav-menu {
         gap: 15px;
@@ -1532,6 +1587,7 @@ body.dark-mode .dark-mode-toggle {
 
     .items-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
     }
 
     .search-filters {
@@ -1559,6 +1615,23 @@ body.dark-mode .dark-mode-toggle {
     .modal-action-btn {
         padding: 10px 15px;
         font-size: 0.9rem;
+    }
+}
+
+/* Small tablets and large mobiles (481px - 600px) */
+@media (min-width: 481px) and (max-width: 600px) {
+    .items-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .hero {
+        min-height: 450px;
+        padding: 50px 20px;
+    }
+    
+    .container {
+        padding: 0 15px;
     }
 }
 
@@ -1595,12 +1668,22 @@ body.dark-mode .dark-mode-toggle {
         font-size: 0.85rem;
         flex: 1;
     }
-    }
 
     .hero {
         min-height: 400px;
         padding: 40px 15px;
     }
+
+    .items-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 0 10px;
+    }
+    
+    .container {
+        padding: 0 10px;
+    }
+}
 
 
 /* ========================
