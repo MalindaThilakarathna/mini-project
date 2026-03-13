@@ -266,6 +266,9 @@ body.dark-mode {
 
 .navbar-buttons {
     order: 3;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
 }
 
 .dark-mode-toggle {

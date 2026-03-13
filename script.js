@@ -146,47 +146,6 @@ function checkAuthenticationStatus() {
     if (user) {
         // User is logged in - show user info and logout button
         const userName = user.name || user.email.split('@')[0];
-        const userBadge = document.createElement('span');
-        userBadge.className = 'auth-button user-badge';
-        userBadge.style.cssText = `
-            padding: 8px 15px;
-            background: var(--gradient);
-            color: white;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: default;
-            text-transform: capitalize;
-        `;
-        const roleText = user.type === 'Guest' ? '👤 Guest' : user.isAdmin ? '👨‍💼 Admin' : '👨‍🎓 Student';
-        userBadge.innerHTML = `${roleText} • ${userName.substring(0, 20)}`;
-        navbar.appendChild(userBadge);
-        
-        // Add logout button
-        const logoutBtn = document.createElement('button');
-        logoutBtn.className = 'auth-button logout-btn';
-        logoutBtn.textContent = 'Logout';
-        logoutBtn.style.cssText = `
-            padding: 8px 18px;
-            background: rgba(239, 68, 68, 0.9);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        `;
-        logoutBtn.addEventListener('mouseover', function() {
-            this.style.background = 'rgb(239, 68, 68)';
-            this.style.transform = 'translateY(-2px)';
-        });
-        logoutBtn.addEventListener('mouseout', function() {
-            this.style.background = 'rgba(239, 68, 68, 0.9)';
-            this.style.transform = 'translateY(0)';
-        });
-        logoutBtn.addEventListener('click', logout);
-        navbar.appendChild(logoutBtn);
         
         // Add Admin dashboard link if user is admin
         if (user.isAdmin) {
@@ -217,6 +176,33 @@ function checkAuthenticationStatus() {
             });
             navbar.appendChild(adminLink);
         }
+        
+        // Add logout button
+        const logoutBtn = document.createElement('button');
+        logoutBtn.className = 'auth-button logout-btn';
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.style.cssText = `
+            padding: 8px 18px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        `;
+        logoutBtn.addEventListener('mouseover', function() {
+            this.style.background = 'rgb(239, 68, 68)';
+            this.style.transform = 'translateY(-2px)';
+        });
+        logoutBtn.addEventListener('mouseout', function() {
+            this.style.background = 'rgba(239, 68, 68, 0.9)';
+            this.style.transform = 'translateY(0)';
+        });
+        logoutBtn.addEventListener('click', logout);
+        navbar.appendChild(logoutBtn);
+        
     } else {
         // User is not logged in - show login button
         const loginBtn = document.createElement('a');

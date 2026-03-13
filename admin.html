@@ -28,9 +28,10 @@
         .admin-user-info {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             flex-shrink: 1;
             min-width: 0;
+            margin-right: 20px;
         }
         
         .admin-header .dark-mode-toggle {
@@ -450,11 +451,11 @@
         <div class="admin-header">
             <h1>⚙️ Admin Dashboard</h1>
             <div class="admin-user-info">
+                <button class="logout-btn" onclick="logout()">Logout</button>
                 <div>
                     <div style="font-size: 0.9rem; opacity: 0.8;">Logged in as:</div>
                     <div id="adminName" style="font-weight: 600;"></div>
                 </div>
-                <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
             <button class="dark-mode-toggle" id="darkModeToggle" title="Toggle Dark Mode">
                 <span class="sun-icon">☀️</span>
