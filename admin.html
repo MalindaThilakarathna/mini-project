@@ -48,49 +48,40 @@
 
         .admin-tabs {
             display: flex;
-            gap: 5px;
-            margin-bottom: 0;
+            gap: 10px;
+            margin-bottom: 30px;
             border-bottom: 2px solid #e5e7eb;
             flex-wrap: wrap;
-            padding: 0 10px;
         }
 
         .admin-tab-btn {
-            padding: 12px 24px;
-            background: transparent;
+            padding: 12px 20px;
+            background: white;
             border: none;
-            border-radius: 10px 10px 0 0;
+            border-radius: 8px 8px 0 0;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             color: #6b7280;
-            border-bottom: 3px solid transparent;
-            margin-bottom: -2px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.95rem;
+            border: 2px solid transparent;
         }
 
         .admin-tab-btn.active {
             color: #2563eb;
-            border-bottom-color: #2563eb;
-            background: white;
+            border-bottom: 3px solid #2563eb;
+            background: #f3f4f6;
         }
 
         .admin-tab-btn:hover:not(.active) {
-            background: rgba(37, 99, 235, 0.05);
+            background: #f9fafb;
             color: #1f2937;
-            border-bottom-color: #d1d5db;
         }
 
         .admin-content {
             background: white;
-            padding: 40px;
-            border-radius: 0 0 15px 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e5e7eb;
-            border-top: none;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         .tab-pane {
@@ -404,10 +395,7 @@
 <body>
     <div class="container" style="padding-top: 30px;">
         <div class="admin-header">
-            <div class="logo-container" style="display: flex; align-items: center; gap: 15px;">
-                <span class="logo-emoji" style="font-size: 2.5rem;">⚙️</span>
-                <h1 class="logo-text" style="color: white; font-weight: 800; font-size: 2rem; margin: 0;">Admin <span class="highlight" style="font-weight: 900; opacity: 0.9;">Dashboard</span></h1>
-            </div>
+            <h1>⚙️ Admin Dashboard</h1>
             <div class="admin-user-info">
                 <div>
                     <div style="font-size: 0.9rem; opacity: 0.8;">Logged in as:</div>
