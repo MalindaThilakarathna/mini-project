@@ -1215,11 +1215,13 @@ body.dark-mode .dark-mode-toggle {
     line-height: 1.5;
     margin-bottom: 15px;
     display: -webkit-box;
+
     -webkit-line-clamp: 2;
+    line-clamp: 2;
+
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-
 .item-contact {
     padding-top: 15px;
     border-top: 1px solid var(--border-color);
