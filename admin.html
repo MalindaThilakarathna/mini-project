@@ -15,21 +15,32 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
             gap: 20px;
+<<<<<<< HEAD
+            min-height: 80px;
+=======
             position: relative;
             z-index: 9;
+>>>>>>> 1a96cd28515e903954f14cbe5e88fe2893bb8813
         }
 
         .admin-header h1 {
             margin: 0;
             font-size: 2rem;
+            flex-shrink: 0;
         }
 
         .admin-user-info {
             display: flex;
             align-items: center;
             gap: 15px;
+            flex-shrink: 1;
+            min-width: 0;
+        }
+        
+        .admin-header .dark-mode-toggle {
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .logout-btn {
@@ -290,12 +301,28 @@
 
         @media (max-width: 768px) {
             .admin-header {
-                flex-direction: column;
-                text-align: center;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                min-height: auto;
             }
 
             .admin-header h1 {
                 font-size: 1.5rem;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .admin-user-info {
+                order: 2;
+                width: 100%;
+            }
+            
+            .admin-header .dark-mode-toggle {
+                order: 3;
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+                justify-self: flex-start;
             }
 
             .admin-tabs {
