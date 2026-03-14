@@ -280,7 +280,7 @@ body.dark-mode {
     font-size: clamp(1.3rem, 3vw, 1.8rem);
     font-weight: 700;
     font-style: bold;
-    color: var(--bg-white);
+    color: #E0F2FE;
     letter-spacing: -0.5px;
     white-space: nowrap;
 }
@@ -307,25 +307,13 @@ body.dark-mode {
     position: relative;
 }
 
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #e0f2fe, #fbbf24);
-    transition: width 0.3s ease;
-}
-
-.nav-link:hover::after,
-.nav-link.active::after {
-    width: 100%;
-}
-
 .nav-link.active,
 .nav-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 8px 16px;
     color: #e0f2fe;
+    backdrop-filter: blur(10px);
 }
 
 .navbar-buttons {
@@ -391,13 +379,15 @@ body.dark-mode .dark-mode-toggle {
     white-space: nowrap;
     cursor: pointer;
     border: none;
-    background: #2563eb;
+    background: #1E3FA7 !important;
     color: white;
 }
 
 .auth-button:hover {
-    background: #1d4ed8;
-    transform: translateY(-2px);
+    background: #E0F2FE !important;
+    color: black !important;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .navbar-buttons .user-badge {
@@ -803,9 +793,10 @@ body.dark-mode .dark-mode-toggle {
 .stats-container {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    justify-content: center;
     gap: 30px;
+    flex-wrap: wrap;
 }
 
 .stat-card {
@@ -1444,7 +1435,7 @@ body.dark-mode .dark-mode-toggle {
 .recent-items > .container > h2 {
     text-align: center;
     font-size: 2rem;
-    color: var(--bg-white);
+    color: #E0F2FE;
     margin-bottom: 40px;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }

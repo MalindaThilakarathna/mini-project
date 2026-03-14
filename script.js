@@ -808,14 +808,23 @@ function updateStats() {
     const foundCountEl = document.getElementById('foundCount');
     const returnedCountEl = document.getElementById('returnedCount');
 
-    if (lostCountEl) animateCounter(lostCountEl, lostCount);
-    if (foundCountEl) animateCounter(foundCountEl, foundCount);
-    if (returnedCountEl) animateCounter(returnedCountEl, returnedCount);
+    if (lostCountEl) {
+        lostCountEl.textContent = '0';
+        lostCountEl.dataset.target = lostCount;
+    }
+    if (foundCountEl) {
+        foundCountEl.textContent = '0';
+        foundCountEl.dataset.target = foundCount;
+    }
+    if (returnedCountEl) {
+        returnedCountEl.textContent = '0';
+        returnedCountEl.dataset.target = returnedCount;
+    }
 }
 
 function animateCounter(element, target) {
     let current = 0;
-    const increment = Math.ceil(target / 30);
+    const increment = Math.ceil(target / 50);
     const interval = setInterval(() => {
         current += increment;
         if (current >= target) {
@@ -823,7 +832,7 @@ function animateCounter(element, target) {
             clearInterval(interval);
         }
         element.textContent = current;
-    }, 30);
+    }, 50);
 }
 
 /* ========================
@@ -832,14 +841,22 @@ function animateCounter(element, target) {
 
 // Observe elements for scroll animations
 const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
+    threshold: 1.0,
+    rootMargin: '0px 0px 0px 0px'
 };
 
 const observer = new IntersectionObserver(function(entries) {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             entry.target.classList.add('fade-in');
+            // Trigger counter animation for stat numbers
+            const statNumber = entry.target.querySelector('.stat-number');
+            if (statNumber && statNumber.dataset.target) {
+                const target = parseInt(statNumber.dataset.target);
+                if (target >= 1) {
+                    animateCounter(statNumber, target);
+                }
+            }
             observer.unobserve(entry.target);
         }
     });
