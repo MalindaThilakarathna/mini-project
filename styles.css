@@ -496,21 +496,24 @@ body.dark-mode .dark-mode-toggle {
 /* Mobile navbar buttons */
 @media (max-width: 768px) {
     .nav-item-more {
-        display: block;
+        display: none;
     }
 
     .nav-container {
-        flex-wrap: wrap;
-        height: auto;
-        align-items: center;
+        flex-direction: column;
         justify-content: center;
-        text-align: center;
+        align-items: center;
+        position: relative;
+        padding: 8px 0;
     }
 
     .nav-logo {
         order: 1;
         width: 100%;
-        margin: 0 auto;
+        margin: 0;
+        padding: 10px 20px;
+        box-sizing: border-box;
+        text-align: center;
     }
 
     .nav-toggle {
@@ -520,79 +523,93 @@ body.dark-mode .dark-mode-toggle {
         position: absolute;
         left: 16px;
         top: 15px;
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        font-size: 1.5rem;
+    }
+
+    .nav-toggle:hover {
+        background: rgba(255, 255, 255, 0.35);
     }
 
     .dark-mode-toggle {
-        order: 3;
+        order: 2;
         position: absolute;
         right: 16px;
-        top: 10px;
+        top: 13px;
+        width: 46px;
+        height: 46px;
     }
 
     .nav-menu {
         order: 3;
-        width: 100%;
+        position: absolute;
+        top: 70px;
+        left: 8px;
+        right: 8px;
+        width: calc(100% - 16px);
         max-height: 0;
         overflow: hidden;
-        background: rgba(15, 23, 42, 0.95);
-        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(6, 18, 63, 0.95);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 14px 25px rgba(0, 0, 0, 0.32);
         flex-direction: column;
-        transition: max-height 0.3s ease;
-        margin: 0;
-        padding: 0;
+        transition: max-height 0.25s ease-out, opacity 0.25s ease;
+        opacity: 0;
+        z-index: 1001;
+        backdrop-filter: blur(8px);
     }
 
     .nav-menu.open {
-        max-height: 400px;
-        padding: 10px 0;
+        max-height: 320px;
+        opacity: 1;
     }
 
     .nav-item {
         width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .nav-link,
-    .more-btn {
+    .nav-link {
         display: block;
         width: 100%;
-        padding: 12px 18px;
-        white-space: nowrap;
+        padding: 14px 20px;
+        color: #e9f2ff;
+        font-size: 1.05rem;
+        font-weight: 600;
         text-align: left;
-    }
-
-    .nav-item-more .more-dropdown {
-        position: static;
-        border: none;
         background: transparent;
-        box-shadow: none;
-        margin: 0;
-        padding: 0;
+        transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    .more-dropdown li a {
-        padding-left: 32px;
-        background: rgba(255, 255, 255, 0.06);
-        margin: 2px 10px;
-        border-radius: 8px;
+    .nav-link:hover,
+    .nav-link.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
     }
 
-    .more-dropdown.open,
-    .nav-item-more:hover .more-dropdown {
-        display: block;
+    .more-btn,
+    .nav-item-more .more-dropdown {
+        display: none;
     }
 
     .navbar-buttons {
-        margin-left: 10px;
-        gap: 5px;
+        order: 4;
+        margin-top: 4px;
+        width: 100%;
+        justify-content: center;
+        display: none;
     }
-    
-    .auth-button {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-    
-    .navbar-buttons .user-badge {
-        display: none; /* Hide user badge on mobile */
+
+    .auth-button,
+    .logout-btn,
+    .admin-link {
+        margin: 3px;
     }
 }
 
@@ -1437,17 +1454,7 @@ body.dark-mode .dark-mode-toggle {
     font-size: 0.95rem;
     line-height: 1.5;
     margin-bottom: 15px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.item-contact {
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.9rem;
-    color: var(--text-light);
+    /* no truncation; full content flow */
 }
 
 .contact-info {

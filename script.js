@@ -232,6 +232,36 @@ function checkAuthenticationStatus() {
         });
         navbar.appendChild(loginBtn);
     }
+
+    updateMobileAuthMenu(user);
+}
+
+function updateMobileAuthMenu(user) {
+    const navMenu = document.getElementById('navMenu');
+    if (!navMenu) return;
+
+    // Remove previous mobile auth item to avoid duplicates
+    const existingItem = navMenu.querySelector('.mobile-auth-item');
+    if (existingItem) {
+        existingItem.remove();
+    }
+
+    if (user) {
+        const li = document.createElement('li');
+        li.className = 'nav-item mobile-auth-item';
+
+        const logoutLink = document.createElement('a');
+        logoutLink.href = '#';
+        logoutLink.textContent = 'Logout';
+        logoutLink.className = 'nav-link';
+        logoutLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            logout();
+        });
+
+        li.appendChild(logoutLink);
+        navMenu.appendChild(li);
+    }
 }
 
 // Check authentication on every page load
@@ -1009,7 +1039,8 @@ function setupMobileNav() {
     if (navToggle && navMenu) {
         navToggle.addEventListener('click', function (e) {
             e.stopPropagation();
-            navMenu.classList.toggle('open');
+            const isOpen = navMenu.classList.toggle('open');
+            navToggle.textContent = isOpen ? '✕' : '☰';
         });
     }
 
@@ -1027,6 +1058,11 @@ function setupMobileNav() {
 
         if (navMenu && !navMenu.contains(target) && navToggle && !navToggle.contains(target)) {
             navMenu.classList.remove('open');
+            if (navToggle) navToggle.textContent = '☰';
+        }
+        if (navMenu && navMenu.contains(target) && target.classList.contains('nav-link')) {
+            navMenu.classList.remove('open');
+            if (navToggle) navToggle.textContent = '☰';
         }
         if (moreDropdown && !moreDropdown.contains(target) && moreBtn && !moreBtn.contains(target)) {
             moreDropdown.classList.remove('open');
