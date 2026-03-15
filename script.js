@@ -999,3 +999,46 @@ function toggleDarkMode() {
     localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
 }
 
+// Mobile navigation toggle and More dropdown
+function setupMobileNav() {
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const moreBtn = document.getElementById('moreBtn');
+    const moreDropdown = document.getElementById('moreDropdown');
+
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            navMenu.classList.toggle('open');
+        });
+    }
+
+    if (moreBtn && moreDropdown) {
+        moreBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            moreDropdown.classList.toggle('open');
+            moreBtn.setAttribute('aria-expanded', moreDropdown.classList.contains('open'));
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+        const target = event.target;
+
+        if (navMenu && !navMenu.contains(target) && navToggle && !navToggle.contains(target)) {
+            navMenu.classList.remove('open');
+        }
+        if (moreDropdown && !moreDropdown.contains(target) && moreBtn && !moreBtn.contains(target)) {
+            moreDropdown.classList.remove('open');
+            if (moreBtn) {
+                moreBtn.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+}
+
+// Initialize mobile navigation when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setupMobileNav();
+});
+

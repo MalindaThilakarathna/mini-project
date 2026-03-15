@@ -25,7 +25,8 @@
             <div class="nav-logo">
                 <h1>🏫 Campus Lost & Found</h1>
             </div>
-            <ul class="nav-menu">
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">☰</button>
+            <ul class="nav-menu" id="navMenu">
                 <li class="nav-item">
                     <a href="index.html" class="nav-link">Home</a>
                 </li>
@@ -37,6 +38,15 @@
                 </li>
                 <li class="nav-item">
                     <a href="search.html" class="nav-link">Search Items</a>
+                </li>
+                <li class="nav-item nav-item-more">
+                    <button class="nav-link more-btn" id="moreBtn" aria-expanded="false">More ▾</button>
+                    <ul class="more-dropdown" id="moreDropdown">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="report-lost.html">Report Lost Item</a></li>
+                        <li><a href="report-found.html">Report Found Item</a></li>
+                        <li><a href="search.html">Search Items</a></li>
+                    </ul>
                 </li>
             </ul>
             <div class="navbar-buttons">
